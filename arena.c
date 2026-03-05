@@ -1,6 +1,6 @@
 #include "arena.h"
 
-Arena *initArena(size_t size) {
+Arena *init_arena(size_t size) {
   Arena *arena = (Arena *)ARENA_MALLOC(sizeof(Arena));
   arena->mem = (char *)ARENA_MALLOC(sizeof(char) * size + 1);
   arena->size = size;
@@ -8,7 +8,7 @@ Arena *initArena(size_t size) {
   return arena;
 }
 
-Arena *initArenaWithMem(size_t size, void *memArea) {
+Arena *init_arena_mem(size_t size, void *memArea) {
   Arena *arena = (Arena *)ARENA_MALLOC(sizeof(Arena));
   arena->mem = (char *)memArea;
   arena->size = size;
@@ -16,7 +16,7 @@ Arena *initArenaWithMem(size_t size, void *memArea) {
   return arena;
 }
 
-void *arenaAlloc(Arena *arena, size_t s) {
+void *arena_malloc(Arena *arena, size_t s) {
   if (arena == NULL || s > arena->size - arena->offset) {
     return NULL;
   }
@@ -27,11 +27,11 @@ void *arenaAlloc(Arena *arena, size_t s) {
   return pointer;
 }
 
-void freeArena(Arena *arena) {
+void free_arena(Arena *arena) {
   ARENA_FREE(arena->mem);
   arena->offset = 0;
   arena->size = 0;
   arena->mem = 0;
 }
 
-void arenaReset(Arena *arena) { arena->offset = 0; }
+void arena_reset(Arena *arena) { arena->offset = 0; }

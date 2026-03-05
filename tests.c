@@ -35,11 +35,11 @@ int main() {
   /* add the tests to the suite */
   /* NOTE - ORDER IS IMPORTANT - MUST TEST fread() AFTER fprintf() */
   if ((NULL == CU_add_test(pSuite, "test of null safety", testNullValues) ||
-       (NULL == CU_add_test(pSuite, "test of arenaAlloc()", testAlloc)) ||
+       (NULL == CU_add_test(pSuite, "test of arena_malloc()", testAlloc)) ||
        (NULL == CU_add_test(pSuite, "test of initializing the arena",
                             testArenaInits))) ||
       (NULL == CU_add_test(pSuite, "test arenaFree()", testArenaFree)) ||
-      (NULL == CU_add_test(pSuite, "Test arenaReset", testArenaReset))) {
+      (NULL == CU_add_test(pSuite, "Test arena_reset", testArenaReset))) {
     CU_cleanup_registry();
     return CU_get_error();
   }
@@ -54,8 +54,8 @@ int main() {
 
 int init_suite1() {
   preMem = (char *)malloc(sizeof(char) * TESTING_SIZE);
-  arena = initArena(TESTING_SIZE);
-  arena2 = initArenaWithMem(TESTING_SIZE, preMem);
+  arena = init_arena(TESTING_SIZE);
+  arena2 = init_arena_mem(TESTING_SIZE, preMem);
 
   if (preMem == NULL || arena == NULL || arena2 == NULL) {
     return -1;
@@ -65,69 +65,69 @@ int init_suite1() {
 }
 
 int clean_suite1() {
-  freeArena(arena);
-  freeArena(arena2);
+  free_arena(arena);
+  free_arena(arena2);
   return 0;
 }
 
 void testArenaFree() {
-  freeArena(arena);
-  freeArena(arena2);
+  free_arena(arena);
+  free_arena(arena2);
   CU_ASSERT(arena->mem == NULL);
   CU_ASSERT(arena->offset == 0);
   CU_ASSERT(arena->size == 0);
   init_suite1();
-  arenaReset(arena);
-  arenaReset(arena2);
+  arena_reset(arena);
+  arena_reset(arena2);
 }
 
 void testNullValues() {
-  CU_ASSERT(arenaAlloc(arena, FALSE_TEST_SIZE) == NULL);
-  CU_ASSERT(arenaAlloc(arena, FALSE_TEST_SIZE) == NULL);
-  arenaReset(arena);
-  arenaReset(arena2);
+  CU_ASSERT(arena_malloc(arena, FALSE_TEST_SIZE) == NULL);
+  CU_ASSERT(arena_malloc(arena, FALSE_TEST_SIZE) == NULL);
+  arena_reset(arena);
+  arena_reset(arena2);
 }
 
 void testArenaInits() {
   CU_ASSERT(arena2->mem == preMem);
   CU_ASSERT(arena->size == TESTING_SIZE && arena2->size == TESTING_SIZE);
   CU_ASSERT(arena->offset == 0 && arena2->offset == 0);
-  arenaReset(arena);
-  arenaReset(arena2);
+  arena_reset(arena);
+  arena_reset(arena2);
 }
 
 void testAlloc() {
   void *ptr1;
-  ptr1 = arenaAlloc(arena, TRUE_TEST_SIZE);
+  ptr1 = arena_malloc(arena, TRUE_TEST_SIZE);
   CU_ASSERT(ptr1 != NULL);
 
   void *ptr2;
-  ptr2 = arenaAlloc(arena2, TRUE_TEST_SIZE);
+  ptr2 = arena_malloc(arena2, TRUE_TEST_SIZE);
   CU_ASSERT(ptr1 != NULL);
 
   for (int i = 0; i < 3; i++) {
-    ptr1 = arenaAlloc(arena, TRUE_TEST_SIZE);
+    ptr1 = arena_malloc(arena, TRUE_TEST_SIZE);
     CU_ASSERT(ptr1 != NULL);
 
-    ptr2 = arenaAlloc(arena2, TRUE_TEST_SIZE);
+    ptr2 = arena_malloc(arena2, TRUE_TEST_SIZE);
     CU_ASSERT(ptr2 != NULL);
   }
 
-  arenaReset(arena);
-  arenaReset(arena2);
+  arena_reset(arena);
+  arena_reset(arena2);
 
-  arenaAlloc(arena, 5);
-  arenaAlloc(arena2, 5);
+  arena_malloc(arena, 5);
+  arena_malloc(arena2, 5);
   CU_ASSERT(arena->offset == 8);
   CU_ASSERT(arena2->offset == 8);
 
-  arenaReset(arena);
-  arenaReset(arena2);
+  arena_reset(arena);
+  arena_reset(arena2);
 }
 
 void testArenaReset() {
-  arenaReset(arena);
-  arenaReset(arena2);
+  arena_reset(arena);
+  arena_reset(arena2);
   CU_ASSERT(arena->offset == 0);
   CU_ASSERT(arena2->offset == 0);
 }

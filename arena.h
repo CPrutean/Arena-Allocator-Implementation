@@ -27,15 +27,15 @@ typedef struct {
 } Arena;
 
 // Generate a new arena with a new heap buffer depending
-Arena *initArena(size_t size);
+Arena *init_arena(size_t size);
 // Generate a new arena with a already preallocated memory buffer
-Arena *initArenaWithMem(size_t size, void *memArea);
+Arena *init_arena_mem(size_t size, void *memArea);
 // Allocate memory with a new size
-void *arenaAlloc(Arena *arena, size_t s);
+void *arena_malloc(Arena *arena, size_t s);
 
 // Free the arena pointer, should be called before terminating a
 // arena pointer
-void freeArena(Arena *arena);
+void free_arena(Arena *arena);
 
 // Set arena to allow overwriting of the buffer
-void arenaReset(Arena *arena);
+void arena_reset(Arena *arena);
