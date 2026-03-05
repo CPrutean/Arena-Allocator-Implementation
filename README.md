@@ -14,26 +14,24 @@ An arena holds a fixed-size memory buffer (`mem`), a current write position (`of
 | `arena.c`          | Implementation of all arena functions.                                                                                                 |
 | `tests.c`          | CUnit test suite covering null-safety, allocation, initialization, freeing, and reset behavior.                                        |
 | `compile_tests.sh` | Shell script to compile the test binary using GCC and CUnit (Homebrew path).                                                           |
-| `test_add`         | Compiled test binary (output of `compile_tests.sh`).                                                                                   |
-| `a.out`            | Default compiled output artifact.                                                                                                      |
 
 ## API
 
 ```c
 // Create a new arena backed by a freshly heap-allocated buffer
-Arena *initArena(size_t size);
+Arena *init_arena(size_t size);
 
 // Create a new arena backed by an existing memory buffer
-Arena *initArenaWithMem(size_t size, void *memArea);
+Arena *init_arena_mem(size_t size, void *memArea);
 
 // Allocate `s` bytes from the arena (returns NULL if out of space)
-void *arenaAlloc(Arena *arena, size_t s);
+void *arena_malloc(Arena *arena, size_t s);
 
 // Free the arena's backing buffer and zero out its fields
-void freeArena(Arena *arena);
+void free_arena(Arena *arena);
 
 // Reset the offset to 0, allowing the buffer to be reused
-void arenaReset(Arena *arena);
+void arena_reset(Arena *arena);
 ```
 
 ## Customizing the Allocator
